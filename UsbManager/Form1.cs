@@ -16,7 +16,7 @@ namespace UsbManager
         }
 
         private Thread thread;
-
+        private bool IsShowErrorBox;
         private List<Device> GetDevices()
         {
             List<Device> devices = new List<Device>();
@@ -88,20 +88,24 @@ namespace UsbManager
 
 
                     }
-                    
-                    if(dataGridView1.Rows.Count > 0)
+
+                    if (dataGridView1.Rows.Count > 0)
                     {
                         int j = 0;
-                        while (j < dataGridView1.Rows.Count -1)
+                        while (j < dataGridView1.Rows.Count - 1)
                         {
                             string name = dataGridView1.Rows[j].Cells[0].FormattedValue.ToString();
-                            Console.WriteLine("Name: " + name);
                             if (devices.FindIndex(device => device.Name == name) > -1)
                             {
                                 j++;
                             }
                             else
                             {
+                                if (IsShowErrorBox)
+                                {
+                                    IsShowErrorBox = false;
+                                }
+                                MessageBox.Show("Unsafe device ejecting", "Eject error", MessageBoxButtons.OK);
                                 dataGridView1.Rows.RemoveAt(j);
                             }
 
@@ -115,6 +119,7 @@ namespace UsbManager
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            IsShowErrorBox = true;
             thread = new Thread(UpdateDeviceTable);
             thread.Start();
         }
@@ -122,6 +127,32 @@ namespace UsbManager
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             thread.Abort();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (dataGridView1.CurrentRow.Index >= 0)
+            {
+                DialogResult dialogResult = MessageBox
+                    .Show("Are you sure want to eject this USB?", "Eject notification", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    List<Device> devices = GetDevices();
+                    if (devices.Count > dataGridView1.CurrentRow.Index)
+                    {
+                        MessageBox.Show("Device can be eject", "", MessageBoxButtons.OK);
+                        devices[dataGridView1.CurrentRow.Index].Eject();
+                        devices.RemoveAt(dataGridView1.CurrentRow.Index);
+                        dataGridView1.Rows.RemoveAt(dataGridView1.CurrentRow.Index);
+                        IsShowErrorBox = false;
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Select device before click button \"Eject\"", "Eject error", MessageBoxButtons.OK);
+            }
+
         }
     }
 }

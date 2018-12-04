@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Chimp.Logging.Core, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Chimp.Logging.Core.0.2.0-alpha\lib\net45\Chimp.Logging.Core.dll</HintPath>
+    </Reference>
     <Reference Include="MediaDevices, Version=1.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MediaDevices.1.7.0\lib\net45\MediaDevices.dll</HintPath>
     </Reference>
@@ -48,6 +51,9 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="UsbEject, Version=3.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UsbEject.3.2.1-alpha\lib\net45\UsbEject.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Device.cs" />

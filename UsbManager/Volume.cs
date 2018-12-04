@@ -15,6 +15,7 @@ namespace UsbManager
 
         public Volume(string name, long totalSpace, long freeSpace)
         {
+            this.name = name;
             this.totalSpace = totalSpace;
             this.freeSpace = freeSpace;
             this.usedSpace = totalSpace - freeSpace;

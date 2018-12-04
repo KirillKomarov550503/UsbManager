@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UsbEject;
 
 namespace UsbManager
 {
@@ -36,6 +37,19 @@ namespace UsbManager
         {
             set { volumes = value; }
             get { return volumes; }
+        }
+
+        public void Eject()
+        {
+            var elem = new VolumeDeviceClass();
+            foreach (UsbEject.Volume volume in elem.Volumes)
+            {
+                if(volumes.FindIndex(vol => vol.Name == volume.LogicalDrive) > -1)
+                {
+                    volume.Eject(false);
+                    break;
+                }
+            }
         }
     }
 }
