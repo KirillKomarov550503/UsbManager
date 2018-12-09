@@ -16,7 +16,6 @@ namespace UsbManager
         }
 
         private Thread thread;
-        private bool IsShowErrorBox;
         private List<Device> GetDevices()
         {
             List<Device> devices = new List<Device>();
@@ -101,11 +100,7 @@ namespace UsbManager
                             }
                             else
                             {
-                                if (IsShowErrorBox)
-                                {
-                                    IsShowErrorBox = false;
-                                }
-                                MessageBox.Show("Unsafe device ejecting", "Eject error", MessageBoxButtons.OK);
+                               
                                 dataGridView1.Rows.RemoveAt(j);
                             }
 
@@ -119,7 +114,7 @@ namespace UsbManager
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            IsShowErrorBox = true;
+      
             thread = new Thread(UpdateDeviceTable);
             thread.Start();
         }
@@ -131,20 +126,37 @@ namespace UsbManager
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (dataGridView1.CurrentRow.Index >= 0)
+            int index = dataGridView1.CurrentRow.Index;
+            if ( index>= 0)
             {
                 DialogResult dialogResult = MessageBox
                     .Show("Are you sure want to eject this USB?", "Eject notification", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.Yes)
                 {
                     List<Device> devices = GetDevices();
-                    if (devices.Count > dataGridView1.CurrentRow.Index)
+                    if (devices.Count > index)
                     {
-                        MessageBox.Show("Device can be eject", "", MessageBoxButtons.OK);
-                        devices[dataGridView1.CurrentRow.Index].Eject();
-                        devices.RemoveAt(dataGridView1.CurrentRow.Index);
-                        dataGridView1.Rows.RemoveAt(dataGridView1.CurrentRow.Index);
-                        IsShowErrorBox = false;
+                        
+                        if(devices[index].IsFree())
+                        {
+                            MessageBox.Show("Device can be eject", "", MessageBoxButtons.OK);
+                            devices.RemoveAt(index);
+                          
+                            try
+                            {
+                                dataGridView1.Rows.RemoveAt(index);
+                            }
+                            catch (Exception ex)
+                            {
+
+                            }
+                            
+                        }
+                        else
+                        { 
+                            MessageBox.Show("Device is busy", "Error eject", MessageBoxButtons.OK);
+                        }
+                        
                     }
                 }
             }

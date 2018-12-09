@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UsbEject;
 
 namespace UsbManager
@@ -13,7 +11,7 @@ namespace UsbManager
         private string name;
         private DeviceType deviceType;
         private List<Volume> volumes;
-        
+
         public Device(string name, DeviceType deviceType, List<Volume> volumes)
         {
             this.name = name;
@@ -39,17 +37,15 @@ namespace UsbManager
             get { return volumes; }
         }
 
-        public void Eject()
+
+        public bool IsFree()
         {
-            var elem = new VolumeDeviceClass();
-            foreach (UsbEject.Volume volume in elem.Volumes)
-            {
-                if(volumes.FindIndex(vol => vol.Name == volume.LogicalDrive) > -1)
-                {
-                    volume.Eject(false);
-                    break;
-                }
-            }
+            VolumeDeviceClass elem = new VolumeDeviceClass();
+            var v = new VolumeDeviceClass().SingleOrDefault(volume =>
+            volumes.FindIndex(vol => vol.Name == volume.LogicalDrive) > -1);
+            v.Eject(false);
+            return new VolumeDeviceClass().SingleOrDefault(volume =>
+            volumes.FindIndex(vol => vol.Name == volume.LogicalDrive) > -1) == null ;
         }
     }
 }
